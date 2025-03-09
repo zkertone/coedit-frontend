@@ -52,3 +52,19 @@ export default tseslint.config({
   },
 })
 ```
+
+
+# UI 组件库
+npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
+
+# 路由管理
+npm install react-router-dom
+
+# HTTP 请求库
+npm install axios
+
+# 状态管理
+npm install @reduxjs/toolkit react-redux
+
+# 实时协作库
+npm install quill yjs y-websocket
