@@ -1,27 +1,18 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
-import { store } from './stores/store'
+import { store, persistor } from './stores/store'
 import App from './App'
-import { ThemeProvider, CssBaseline } from '@mui/material'
-import { createTheme } from '@mui/material/styles'
-
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#1976d2',
-    },
-  },
-});
+import { CssBaseline, CircularProgress } from '@mui/material'
+import { PersistGate } from 'redux-persist/integration/react'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
+      <PersistGate loading={<CircularProgress />} persistor={persistor}>
         <CssBaseline />
         <App />
-      </ThemeProvider>
+      </PersistGate>
     </Provider>
-  </React.StrictMode>,
+  </React.StrictMode>
 )

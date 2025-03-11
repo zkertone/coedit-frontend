@@ -1,7 +1,6 @@
 import { Container, styled } from "@mui/material"
 
 export const AuthContainer = styled('div')({
-    
     minHeight: '100vh',
     display: 'flex',
     justifyContent: 'center',

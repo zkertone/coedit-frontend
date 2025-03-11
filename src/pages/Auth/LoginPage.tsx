@@ -53,12 +53,17 @@ const LoginPage = () => {
 
             //存储Token并更新Redux状态
             dispatch(loginSuccess({
-                user:response.data.username,
-                token:response.data.accessToken,
+                user: response.data.username,
+                token: {
+                    accessToken: response.data.accessToken,
+                }
             }));
 
-            //重定向到主页
-            navigate('/');
+            // 获取原始目标路径
+            const from = location.state?.from?.pathname || '/';
+            
+            //重定向到原始请求页面或首页
+            navigate(from, { replace: true });
         } catch (error) {
             setError('登录失败，请检查用户名和密码');
         } finally {

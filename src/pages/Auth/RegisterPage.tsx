@@ -26,6 +26,12 @@ const RegisterPage = () => {
         
         return metConditions >= 3;
     };
+
+    const vaildateEmail = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (formData.password !== formData.confirmPassword) {
@@ -39,6 +45,10 @@ const RegisterPage = () => {
 
         if (!validatePassword(formData.password)) {
             setError('密码必须包含大写字母、小写字母、数字、特殊字符中的至少三种');
+            return;
+        }
+        if (!vaildateEmail(formData.email)) {
+            setError('邮箱格式不正确');
             return;
         }
         try {
