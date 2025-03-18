@@ -26,7 +26,7 @@ function App() {
         <Route path="/document/:id" element={<DocumentPage />} />
         <Route path="/documents" element={<DocumentListPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/document/:id/edit" element={<DocumentEditPage />} />
+        <Route path="/document/id/edit" element={<DocumentEditPage />} />
       </Route>
 
       {/*错误路由*/}

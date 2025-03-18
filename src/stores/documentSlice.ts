@@ -9,6 +9,10 @@ export interface Document {
     updatedAt: string;
     onlineUsers: number;
     creatorId: string;
+    permissions: {
+        userId: string;
+        role: string;
+    }[];
 }
 
 interface DocumentState {
@@ -30,7 +34,6 @@ export const fetchDocuments = createAsyncThunk(
     async () => {
         try {
             const response = await api.get('/documents');
-            // console.log('文档列表响应:', response.data);
             return response.data;
         } catch (error) {
             console.error('获取文档列表失败:', error);
@@ -46,9 +49,7 @@ export const createDocument = createAsyncThunk(
         const documentData = {
             title
         };
-        
-        // console.log('创建文档请求数据:', JSON.stringify(documentData));
-        
+
         const response = await api.post('/documents', documentData);
         return response.data;
     }
@@ -67,6 +68,61 @@ export const fetchDocument = createAsyncThunk(
     async (id: string) => {
         const response = await api.get(`/documents/${id}`);
         return response.data;
+    }
+);
+
+export const updateDocument = createAsyncThunk(
+    'documents/update',
+    async (document: Document) => {
+        const response = await api.put(`/documents/${document.id}`, document);
+        return response.data;
+    }
+);
+
+//文档权限
+export const addDocumentPermission = createAsyncThunk(
+    'documents/addPermission',
+    async ({ documentId, targetUserId, role }: { documentId: string; targetUserId: string; role: string }) => {
+        try {
+            await api.post(`/documents/${documentId}/permissions`, {
+                targetUserId,
+                role
+            });
+            return { documentId, targetUserId, role };
+        } catch (error) {
+            console.error('添加文档权限失败:', error);
+            throw error;
+        }
+    }
+);
+
+export const removeDocumentPermission = createAsyncThunk(
+    'documents/deletePermission',
+    async ({ documentId, targetUserId }: { documentId: string; targetUserId: string }) => {
+        try {
+            await api.delete(`/documents/${documentId}/permissions/${targetUserId}`);
+            return { documentId, targetUserId };
+        } catch (error) {
+            console.error('删除文档权限失败:', error);
+            throw error;
+        }
+    }
+);
+
+// 获取当前文档全部权限
+export const fetchDocumentPermissions = createAsyncThunk(
+    'documents/fetchPermissions',
+    async (documentId: string) => {
+        try {
+            const response = await api.get(`/documents/${documentId}/permissions`);
+            return {
+                documentId,
+                permissions: response.data
+            };
+        } catch (error) {
+            console.error('获取文档权限失败:', error);
+            throw error;
+        }
     }
 );
 
@@ -105,6 +161,31 @@ const documentSlice = createSlice({
             .addCase(fetchDocument.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || '加载文档失败';
+            })
+            .addCase(addDocumentPermission.fulfilled, (_state, action) => {
+                console.log('文档权限添加成功:', action.payload);
+            })
+            .addCase(addDocumentPermission.rejected, (_state, action) => {
+                console.error('文档权限添加失败:', action.error);
+            })
+            .addCase(removeDocumentPermission.fulfilled, (_state, action) => {
+                console.log('文档权限删除成功:', action.payload);
+            })
+            .addCase(removeDocumentPermission.rejected, (_state, action) => {
+                console.error('文档权限删除失败:', action.error);
+            })
+            .addCase(fetchDocumentPermissions.fulfilled, (state, action) => {
+                const { documentId, permissions } = action.payload;
+                const document = state.documents.find(doc => doc.id === documentId);
+                if (document) {
+                    document.permissions = Object.entries(permissions).map(([userId, role]) => ({
+                        userId,
+                        role: role as string
+                    }));
+                }
+            })
+            .addCase(fetchDocumentPermissions.rejected, (_state, action) => {
+                console.error('获取文档权限失败:', action.error);
             });
     }
 });

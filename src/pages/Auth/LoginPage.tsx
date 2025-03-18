@@ -71,7 +71,6 @@ const LoginPage = () => {
 
             // 存储Token并更新Redux状态
             dispatch(loginSuccess({
-                // userId: response.data.userId,
                 token: {
                     accessToken: response.data.accessToken,
                 }

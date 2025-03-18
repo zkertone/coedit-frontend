@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { store } from '../stores/store';
+import { logout } from '../stores/authSlice';
 
 const api = axios.create({
     baseURL: 'http://localhost:8080/api',
@@ -7,6 +8,7 @@ const api = axios.create({
         'Content-Type': 'application/json'
     }
 });
+
 
 // 请求拦截器：添加 token
 api.interceptors.request.use((config) => {
@@ -36,7 +38,10 @@ api.interceptors.response.use(
             // 如果是 401 错误，可能是 token 过期
             if (error.response.status === 401) {
                 console.error('认证失败，可能需要重新登录');
-                // 这里可以添加重定向到登录页面的逻辑
+                // 清除 token
+                store.dispatch(logout());
+                // 重定向到登录页面
+                window.location.href = '/login';
             }
         }
         return Promise.reject(error);
