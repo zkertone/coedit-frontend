@@ -2,19 +2,21 @@ import { configureStore } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from './authSlice';
+import documentsReducer from './documentSlice';
 
 const persistConfig = {
     key: 'auth',
     storage,
     version: 1,
-    whitelist: ['user', 'token'] // 明确指定要持久化的字段
+    whitelist: ['userId', 'token'] // 明确指定要持久化的字段
 };
 
-const persistedReducer = persistReducer(persistConfig, authReducer);
+const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 
 export const store = configureStore({
     reducer: {
-        auth: persistedReducer,
+        auth: persistedAuthReducer,
+        documents: documentsReducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

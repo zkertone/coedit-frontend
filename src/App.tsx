@@ -7,6 +7,8 @@ import ReverseAuth from './pages/components/ReverseAuth'
 import DocumentPage from './pages/Document/DocumentPage'
 import NotFoundPage from './pages/Error/NotFoundPage'
 import ProfilePage from './pages/Profile/ProfilePage'
+import DocumentListPage from './pages/Document/DocumentListPage'
+import DocumentEditPage from './pages/Document/DocumentEditPage'
 
 function App() {
   return (
@@ -22,7 +24,9 @@ function App() {
       <Route element={<RequireAuth />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/document/:id" element={<DocumentPage />} />
+        <Route path="/documents" element={<DocumentListPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/document/:id/edit" element={<DocumentEditPage />} />
       </Route>
 
       {/*错误路由*/}

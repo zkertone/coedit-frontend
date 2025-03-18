@@ -49,11 +49,29 @@ const LoginPage = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/login', formData);
+            const response = await axios.post(
+                'http://localhost:8080/api/auth/login', 
+                JSON.stringify(formData),
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            
+            // 调试信息
+            console.log('登录响应:', response.data);
+            console.log('登录响应 token:', response.data.accessToken);
 
-            //存储Token并更新Redux状态
+            if (!response.data.accessToken) {
+                console.error('登录响应中没有 token!');
+                setError('登录失败，服务器未返回有效的认证信息');
+                return;
+            }
+
+            // 存储Token并更新Redux状态
             dispatch(loginSuccess({
-                user: response.data.username,
+                // userId: response.data.userId,
                 token: {
                     accessToken: response.data.accessToken,
                 }
@@ -62,9 +80,10 @@ const LoginPage = () => {
             // 获取原始目标路径
             const from = location.state?.from?.pathname || '/';
             
-            //重定向到原始请求页面或首页
+            // 重定向到原始请求页面或首页
             navigate(from, { replace: true });
         } catch (error) {
+            console.error('登录错误:', error);
             setError('登录失败，请检查用户名和密码');
         } finally {
             setLoading(false);

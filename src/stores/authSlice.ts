@@ -5,12 +5,12 @@ interface Token {
 }
 
 interface AuthState {
-    user: string | null;
+    // userId: string | null;
     token: Token | null;
 }
 
 const initialState: AuthState = {
-    user: null,
+    // userId: null,
     token: null,
 };
 
@@ -18,12 +18,12 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        loginSuccess: (state, action: PayloadAction<{ user: string; token: Token }>) => {
-            state.user = action.payload.user;
+        loginSuccess: (state, action: PayloadAction<{ token: Token }>) => {
+            // state.userId = action.payload.userId;
             state.token = action.payload.token;
         },
         logout: (state) => {
-            state.user = null;
+            // state.userId = null;
             state.token = null;
         },
     },
